@@ -1,9 +1,7 @@
-# Installing
-
-Stable library from PyPi:
-
-* Just run `pip install piqmp6988`
-
+# Notice
+Cloned modified copy from repository [piqmp6988 (Author: Langur)](https://github.com/Langur/piqmp6988)
+This implementation simply abstracts the i2c communication interface in the sensor.
+Motivation is to use the SMBus instead of pgpiod since it is not compatible with non-RPi SBCs
 # PiQmp6988's Methods
 
 ## Constructor(config={})
@@ -126,6 +124,7 @@ Run `sudo pigpiod` before running the sample.
 
     # -*- coding: utf-8 -*-
     import piqmp6988 as QMP6988
+    from piqmp6988.smbus_intf import Smbus
     import time
     
     config = {
@@ -135,7 +134,8 @@ Run `sudo pigpiod` before running the sample.
         'mode' :        QMP6988.Powermode.NORMAL.value
     }
     
-    obj = QMP6988.PiQmp6988(config)
+    bus = Smbus()
+    obj = QMP6988.PiQmp6988(bus, config)
     
     try:
         while True:
