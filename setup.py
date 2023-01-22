@@ -8,14 +8,14 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='piqmp6988',
-    version='1.0.1',
-    author='Akihisa ONODA',
-    author_email='akihisa.onoda@osarusystem.com',
-    description='To use QMP6988 with pigpio.',
+    name='piqmp6988-abst',
+    version='1.1.0',
+    author='Akihisa ONODA, Luis Mercado',
+    author_email='akihisa.onoda@osarusystem.com, luisbzmercado1776@gmail.com',
+    description='QMP6988 with abstracted i2c interface, smbus-capable',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/Langur/piqmp6988',
+    url='https://github.com/LBMercado/qmp6988_smbus',
     classifiers=[
         'License :: OSI Approved :: MIT License',
         "Programming Language :: Python :: 3",
@@ -23,8 +23,8 @@ setup(
     ],
     package_dir={"": "src"},
     packages=['piqmp6988'],
-    install_requires=['pigpio'],
+    install_requires=['pigpio', 'smbus-cffi'],
     license='MIT',
-    keywords='piqmp6988 qmp6988 env3hat pigpio temperature pressure sensor i2c',
+    keywords='piqmp6988 qmp6988 env3hat pigpio temperature pressure sensor i2c smbus',
     
 )
