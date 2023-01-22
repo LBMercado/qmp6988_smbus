@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-import pigpio
 import time
 from enum import Enum
+from piqmp6988.i2c_intf import I2cInterface
 
 # QMP6988の値を扱う処理の詳細はデータシートを参照
 ADDRESS_0            = 0x70
@@ -144,7 +144,7 @@ K_PARAM = {
 }
 
 class PiQmp6988():
-    def __init__(self, config={}):
+    def __init__(self, i2c_intf: I2cInterface, config={}):
         self.k  = {}
         self.config = {}
         config_i = {
@@ -156,13 +156,14 @@ class PiQmp6988():
         }
         self.__modify_config(config_i)
         self.__modify_config(config)
+        self.pi = i2c_intf
         self.__pre_process()
         
         # QMP6988から各レジスタの値を読み出す
-        len, data = self.pi.i2c_read_i2c_block_data(self.qmp6988, REG_CHIP_ID, CHIP_ID_LENGTH)
+        len, data = self.pi.read(REG_CHIP_ID, CHIP_ID_LENGTH)
 
         # キャリブレーションデータを読み出す
-        len, data = self.pi.i2c_read_i2c_block_data(self.qmp6988, REG_COE, COE_LENGTH)
+        len, data = self.pi.read(REG_COE, COE_LENGTH)
         
         # 係数を計算する
         self.__initialize_k(data)
@@ -176,15 +177,13 @@ class PiQmp6988():
         """
         pigpioを初期化してQMP6988との接続を初期化する．
         """
-        self.pi = pigpio.pi()
-        self.qmp6988 = self.pi.i2c_open(1, self.config['address'])
+        self.pi.open(1, self.config['address'])
 
     def __post_process(self):
         """
         pigpioを終了してQMP6988との接続を切断する．
         """
-        self.pi.i2c_close(self.qmp6988)
-        self.pi.stop()
+        self.pi.close()
 
     def __modify_config(self, config={}):
         """
@@ -273,12 +272,12 @@ class PiQmp6988():
         mode : int
             電源モードの指定．
         """
-        len, data = self.pi.i2c_read_i2c_block_data(self.qmp6988, REG_CTRL_MEAS, CTRL_MEAS_LENGTH)
+        len, data = self.pi.read(REG_CTRL_MEAS, CTRL_MEAS_LENGTH)
         if (len == CTRL_MEAS_LENGTH):
             value = data[0] & 0xFC
             
             value |= mode & 0x03
-            self.pi.i2c_write_i2c_block_data(self.qmp6988, REG_CTRL_MEAS, [value])
+            self.pi.write(REG_CTRL_MEAS, [value])
             time.sleep(0.02)
 
     def __set_oversampling(self, mode, sampling):
@@ -301,12 +300,12 @@ class PiQmp6988():
         else:
             return
         
-        len, data = self.pi.i2c_read_i2c_block_data(self.qmp6988, REG_CTRL_MEAS, CTRL_MEAS_LENGTH)
+        len, data = self.pi.read(REG_CTRL_MEAS, CTRL_MEAS_LENGTH)
         if (len == CTRL_MEAS_LENGTH):
             value = data[0] & mask
             
             value |= (sampling & 0x07) << offset
-            self.pi.i2c_write_i2c_block_data(self.qmp6988, REG_CTRL_MEAS, [value])
+            self.pi.write(REG_CTRL_MEAS, [value])
             time.sleep(0.02)
 
     def __set_filter(self, filter):
@@ -319,7 +318,7 @@ class PiQmp6988():
             IIR filterの設定値．
         """
         value = filter & 0x07
-        self.pi.i2c_write_i2c_block_data(self.qmp6988, REG_IIR_CNT, [value])
+        self.pi.write(REG_IIR_CNT, [value])
         time.sleep(0.02)
 
     def __convert_signed(self, value, signed_bit):
@@ -397,7 +396,7 @@ class PiQmp6988():
         """
         self.__pre_process()
         
-        len, data = self.pi.i2c_read_i2c_block_data(self.qmp6988, REG_DATA, DATA_LENGTH)
+        len, data = self.pi.read(REG_DATA, DATA_LENGTH)
         
         self.__post_process()
         
