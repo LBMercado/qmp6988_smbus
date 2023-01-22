@@ -1,6 +1,6 @@
 # Notice
-Cloned modified copy from repository [piqmp6988 (Author: Langur)](https://github.com/Langur/piqmp6988)
-This implementation simply abstracts the i2c communication interface in the sensor.
+Cloned modified copy from repository [piqmp6988 (Author: Langur)](https://github.com/Langur/piqmp6988)\
+This implementation simply abstracts the i2c communication interface in the sensor.\
 Motivation is to use the SMBus instead of pgpiod since it is not compatible with non-RPi SBCs
 # PiQmp6988's Methods
 
