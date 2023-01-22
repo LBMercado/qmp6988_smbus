@@ -8,7 +8,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='piqmp6988-abst',
+    name='piqmp6988_abst',
     version='1.1.0',
     author='Akihisa ONODA, Luis Mercado',
     author_email='akihisa.onoda@osarusystem.com, luisbzmercado1776@gmail.com',
