@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from enum import Enum
+from typing import List
 
 class I2cInterface(ABC):
     def __init__(self):
@@ -14,7 +15,7 @@ class I2cInterface(ABC):
         pass
     
     @abstractmethod
-    def write(self, reg: int, bytes_val: list[bytes]):
+    def write(self, reg: int, bytes_val: List[bytes]):
         pass
     
     @abstractmethod

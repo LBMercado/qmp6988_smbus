@@ -1,3 +1,4 @@
+from typing import List
 from piqmp6988.i2c_intf import I2cInterface
 from smbus import SMBus
 
@@ -26,7 +27,7 @@ class Smbus(I2cInterface):
         data = self.bus.read_i2c_block_data(self.address, reg, byte_count)
         return (len(data), data)
     
-    def write(self, reg: int, bytes_val: list[bytes]):
+    def write(self, reg: int, bytes_val: List[bytes]):
         if not self.is_active:
             return
         return self.bus.write_i2c_block_data(self.address, reg, bytes_val)
